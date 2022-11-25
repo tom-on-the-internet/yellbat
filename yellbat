@@ -1,0 +1,58 @@
+#!/usr/bin/env bash
+
+#            _ _ _           _
+# _   _  ___| | | |__   __ _| |_
+#| | | |/ _ \ | | '_ \ / _` | __|
+#| |_| |  __/ | | |_) | (_| | |_
+# \__, |\___|_|_|_.__/ \__,_|\__|
+# |___/
+#
+# This script creates a Batman meme and copies
+# it to my clipboard
+
+# Stop script if any commands fails
+set -euo pipefail
+
+# Hardcode the batman template
+# But I could change this to another template
+TEMPLATE_ID=9136099
+
+# Temporary place to store the image
+STORAGE_FILE=/tmp/memetmp
+
+# Get the username and password from the environment
+username=$YELLBAT_USERNAME
+password=$YELLBAT_PASSWORD
+
+# The text should be the only argument to the script
+text="${1-}"
+
+# Check for empty variables
+if [ -z "$username" ]; then
+  echo "error: username missing"
+  exit 1
+fi
+
+if [ -z "$password" ]; then
+  echo "error: password missing"
+  exit 1
+fi
+
+if [ -z "$text" ]; then
+  echo "error: text missing"
+  exit 1
+fi
+
+# Fetch the response
+# Send stderr to /dev/null, because cURL
+# uses stderr to show progress
+response=$(curl --data template_id=$TEMPLATE_ID'&username='"$username"'&password='"$password"'&text1="'"$text"'"' https://api.imgflip.com/caption_image 2> /dev/null)
+
+# Slice the URL from the response, and remove escape backslashes
+url=$(echo "$response" | grep --only-matching 'https:.*jpg' | sed 's/\\//g')
+
+# Download the meme with cURL
+curl "$url" --output "$STORAGE_FILE" 2> /dev/null
+
+# Copy to clipboard
+wl-copy -t image/png < "$STORAGE_FILE"
