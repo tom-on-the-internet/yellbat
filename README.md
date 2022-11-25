@@ -20,3 +20,7 @@ This script won't work for you, but you could modify it to work for you.
 ```bash
 yellbat 'Where are the temp files??'
 ```
+
+makes...
+
+![image](https://user-images.githubusercontent.com/8356936/203896618-34b6947d-10f6-4bd5-bfca-c26178534a77.png)
