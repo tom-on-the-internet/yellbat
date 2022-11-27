@@ -56,3 +56,6 @@ curl "$url" --output "$STORAGE_FILE" 2> /dev/null
 
 # Copy to clipboard
 wl-copy -t image/png < "$STORAGE_FILE"
+
+# Print out the url
+echo "$url"
